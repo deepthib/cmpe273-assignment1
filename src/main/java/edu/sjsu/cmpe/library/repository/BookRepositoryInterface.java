@@ -1,6 +1,11 @@
 package edu.sjsu.cmpe.library.repository;
 
+import com.yammer.dropwizard.jersey.params.LongParam;
+
+import edu.sjsu.cmpe.library.api.resources.BookResource;
+import edu.sjsu.cmpe.library.domain.Author;
 import edu.sjsu.cmpe.library.domain.Book;
+import edu.sjsu.cmpe.library.domain.BookReview;
 
 /**
  * Book repository interface.
@@ -31,7 +36,11 @@ public interface BookRepositoryInterface {
     
      void delBookByISBN(Long isbn);
 
-	Book updateStatusByISBN(Long isbn, String newstatus);      
+	Book updateStatusByISBN(Long isbn, String newstatus);
+
+	Book createreview(Book book, BookReview bookreview);
+
+	      
 
     
 }

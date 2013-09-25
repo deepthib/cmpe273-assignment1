@@ -1,5 +1,8 @@
 package edu.sjsu.cmpe.library.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+import edu.sjsu.cmpe.library.domain.Author;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -11,9 +14,34 @@ public class Book {
     public String language;
     @JsonProperty("num-pages")
     public int numpages;
-    public String status="available";
+    public String status;
+   public List <BookReview> review=new ArrayList<BookReview>();
+   public List <Author> authors=new ArrayList<Author>();
+  
+    
+	
 
-    /**
+
+
+
+
+	public List<Author> getAuthors() {
+	return authors;
+}
+
+public void setAuthors(List<Author> authors) {
+	this.authors = authors;
+}
+
+	public List<BookReview> getReview() {
+	return review;
+}
+
+public void setReview(List<BookReview> review) {
+	this.review = review;
+}
+
+	/**
      * @return the isbn
      */
     public long getIsbn() {
@@ -81,7 +109,11 @@ public class Book {
      *            the status to set
      */
     public void setStatus(String status) {
-	this.status = status;
+    if(status.equalsIgnoreCase("check-out")||status.equalsIgnoreCase("lost")||status.equalsIgnoreCase("in-queue")){
+    		this.status=status;
+    	}
+    else
+	this.status = "available";
     }
     
     /**

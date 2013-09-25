@@ -3,24 +3,43 @@ package edu.sjsu.cmpe.library.repository;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import edu.sjsu.cmpe.library.api.resources.BookResource;
+import edu.sjsu.cmpe.library.domain.Author;
 import edu.sjsu.cmpe.library.domain.Book;
+import edu.sjsu.cmpe.library.domain.BookReview;
 
 public class BookRepository implements BookRepositoryInterface {
+	List <BookReview> review=new ArrayList<BookReview>();
+	List <Author> author=new ArrayList<Author>();
     /** In-memory map to store books. (Key, Value) -> (ISBN, Book) */
     private final ConcurrentHashMap<Long, Book> bookInMemoryMap;
 
     /** Never access this key directly; instead use generateISBNKey() */
     private long isbnKey;
+    private long authorKey;
+   private long reviewKey=0;
 
     public BookRepository(ConcurrentHashMap<Long, Book> bookMap) {
 	checkNotNull(bookMap, "bookMap must not be null for BookRepository");
 	bookInMemoryMap = bookMap;
 	isbnKey = 0;
+	authorKey = 0;
+	reviewKey=0;
     }
+  
 
+    /**
+     * This should be called if and only if you are adding new books to the
+     * repository.
+     * 
+     * @return a new incremental ISBN number
+     */
+   
     /**
      * This should be called if and only if you are adding new books to the
      * repository.
@@ -31,6 +50,15 @@ public class BookRepository implements BookRepositoryInterface {
 	// increment existing isbnKey and return the new value
 	return Long.valueOf(++isbnKey);
     }
+    
+    private final Long generateauthorKey() {
+    	// increment existing isbnKey and return the new value
+    	return Long.valueOf(++authorKey);
+        }
+    private final Long generatereviewKey() {
+    	// increment existing isbnKey and return the new value
+    	return Long.valueOf(++reviewKey);
+        }
 
     /**
      * This will auto-generate unique ISBN for new books.
@@ -41,11 +69,13 @@ public class BookRepository implements BookRepositoryInterface {
 	// Generate new ISBN
 	Long isbn = generateISBNKey();
 	newBook.setIsbn(isbn);
-	// TODO: create and associate other fields such as author
-
-	// Finally, save the new book into the map
-	bookInMemoryMap.putIfAbsent(isbn, newBook);
-
+	author=newBook.getAuthors();
+	for(Author a: author){
+		a.setId(generateauthorKey()); 
+	}
+	newBook.setAuthors(author);
+	
+	bookInMemoryMap.put(isbn, newBook);
 	return newBook;
     }
 
@@ -71,6 +101,20 @@ public class BookRepository implements BookRepositoryInterface {
     	book.setStatus(newstatus);
     	return book;
     }
+
+
+	@Override
+	public Book createreview(Book book, BookReview bookreview) {
+			Long key=generatereviewKey();
+			bookreview.setID(key);
+			
+			review.add(bookreview);
+			book.setReview(review);
+			saveBook(book);
+			return book;	
+	}
+
+	
     }
 
 
