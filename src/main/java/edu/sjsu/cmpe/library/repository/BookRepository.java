@@ -73,7 +73,7 @@ public class BookRepository implements BookRepositoryInterface {
 	for(Author a: author){
 		a.setId(generateauthorKey()); 
 	}
-	newBook.setAuthors(author);
+	//newBook.setAuthors(author);
 	
 	bookInMemoryMap.put(isbn, newBook);
 	return newBook;
